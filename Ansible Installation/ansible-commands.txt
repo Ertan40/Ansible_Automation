@@ -1,8 +1,66 @@
-# Check if both servers are reachable.
---> ansible -i,server_1,server_2 all -m ping
+Install Ansible with DockerFiles and docker-compose.yml 
 
-# Check the uptime of both servers.
---> ansible -i server_1,server_2 all -a "uptime"
+  >> docker-compose up -d
+  >> docker ps
+  >> docker container exec -it ansible bash
+  >> ./copy-ssh-keys.sh  # generate ssh key but I got an error
+  >> sed -i 's/\r$//' copy-ssh-keys.sh  # This command removes any carriage return characters from the file. After converting the line endings.
+  >> ./copy-ssh-keys.sh
+  >> ansible -i,server_1,server_2 all -m ping  # Check if both servers are reachable.
+  >> ansible -i server_1,server_2 all -a "uptime"  # Check the uptime of both servers.
 
-# Create a file with a fun message on both servers.
---> ansible -i server_1,server_2 all -m copy -a "content='Have fun with Ansible' dest=/tmp/fun.txt"
+Install Ansible Using Python Vitual Env
+
+1. Verify Python 3 is installed
+  >> python3 --version
+  >> apt install python3-pip
+
+2. If Missing Install python3
+  >> sudo apt update
+  >> sudo apt install software-properties-common
+  >> sudo add-apt-repository ppa:deadsnakes/ppa
+  >> sudo apt update
+  >> sudo apt install python3.8
+  >> sudo apt install python3-pip
+  >> python3 --version
+
+3. Install Dependencies
+  >> sudo apt-get install python3-minimal python3-virtualenv python3-dev build-essential
+
+4. Set-up virtualenv
+  >> mkdir ansible
+  >> cd ansible
+  >> virtualenv myansible
+
+5. Active virtualenv
+  >> source myansible/bin/activate
+
+6. Install Ansible and verify
+  >> pip3 install Ansible
+  >> ansible --version
+
+
+Ansible installation with Docker:
+
+> docker run -d --name ansible-master ubuntu /bin/bash
+> docker run -d --name ansible-node ubuntu /bin/bash
+> docker container attach ...... (container num of the master one)
+> apt update ; apt install python3 ansible openssh-client vim -y
+> apt-get install iputils-ping   # Y and then ctrl + c
+> docker ps
+> docker network ls
+> docker network inspect bridge  (in order to check both are in same network)
+> docker container attach ...... (container num of the node one)
+> apt update ; apt install python3 ansible openssh-client vim -y
+> passwd root
+> vi etc/ssh/sshd_config  # change two options here 1st PermitRootLogin (uncomment and yes) and same for PasswordAuthentication (uncomment and yes) save/quit
+> service ssh restart > service ssh start # and then exit
+> docker container attach ...... (container num of the master one)
+> ssh-keygen # just generate ssh key
+> ssh-copy-id -i root@172.17.0.3   # ip of the ansible-node  and press yes and will ask password which enter that you picked 
+> ssh root@172.17.0.3
+> exit
+> vi /etc/ansible/hosts  ## I am inside the master just type the [node] and type the ip# 172.17.0.3 and save
+> ansible -m ping node  # which we check that all is OK
+> ansible -m ping 172.17.0.3  # or via IP
+
