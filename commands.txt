@@ -1,1 +1,67 @@
 **** Ansible demos - commands **** 
+
+**** Transfer files from Engine to Clients ****
+apt-get update
+apt-get install -y vim  ## because I wasn't able to create files
+vi ansible_test.txt  # and insert a comment > Press the Esc key to ensure you're in command mode.> Type :wq and press Enter. 
+ll
+ansible server_1:server_2 -m copy -a "src=/ansible/ansible_test.txt dest=/tmp"  # getting error because inventory file was missing
+vi /ansible/inventory  # Press i to enter insert mode.> press Esc to exit insert mode.> Type :wq and press Enter to save the changes and exit vi.
+root@ansible:/ansible# cat inventory
+server_1
+server_2
+ansible -i /ansible/inventory server_1:server_2 -m copy -a "src=/ansible/ansible_test.txt dest=/tmp"
+ansible -i /ansible/inventory server_1:server_2 -m copy -a "content='This is Ertan' dest=/tmp/temp.txt" # copy content in new file
+[web_app]  # you can group like this your inventory file, then command will be as below
+server_1
+server_2
+ansible web_app -m copy -a "src=/ansible/ansible_test.txt dest=/tmp" # as here
+exit > docker container exec -it server_1 bash # lets switch to server_1 to check the file
+ll > cd tmp 
+root@server_1:/tmp# cat ansible_test.txt
+This is due to demo purposes with Ansible
+ansible -i /ansible/inventory server_1 -m apt -a "name=python3 state=present"  # to check whether python3 is present
+ansible -i /ansible/inventory server_1 -m setup  # getting ansible_facts info for the client server_1
+ansible -i /ansible/inventory server_1 -m setup -a "filter=ansible_virtualization_type"  # filtering to get specific info
+ansible-doc --list | cat   # get all modules or ansible-doc -l #all_modules: https://docs.ansible.com/ansible/2.9/modules/list_of_all_modules.html
+
+**** how to create custom facts - demo **** #Note: must be created on clients
+docker container exec -it server_1 bash  # let's switch to server_1
+apt list --installed  #lists all installed packages on the system(using the: dpkg-query tool #for more details and for Linux:sudo yum list installed)
+apt-get update
+apt-get install -y git
+git --version    #output: git version 2.43.0
+git --version | awk '{print $3}'   #output: 2.43.0
+apt-get update
+apt-get install -y vim
+root@server_1:/# vi getfacts.sh
+root@server_1:/# chmod 755 getfacts.sh
+root@server_1:/# ./getfacts.sh  # we define it in JSON format
+{
+       "GIT_VERSION": "2.43.0"
+}
+root@server_1:/# cat getfacts.sh
+#!/bin/bash
+
+git_version=$(git --version | awk '{print $3}')
+
+cat << EOF
+{
+       "GIT_VERSION": "$git_version"
+}
+EOF
+docker container exec -it ansible bash  # switch to Master
+vi /tmp/get_version.facts   # I have copied the same
+ansible all -i inventory -m ping  # success , because I updated the inventory file and named [all]
+ansible all -i inventory -m file -a "path=/etc/ansible/facts.d state=directory"    # create directory (for root just add -b in the end)
+ll /tmp/   # copy the file get_version.facts
+ansible all -i inventory -m copy -a "src=/tmp/get_version.facts dest=/etc/ansible/facts.d"  # CHANGED for both
+ansible all -i inventory -m copy -a "src=/tmp/get_version.facts dest=/etc/ansible/facts.d mode='0755'"  # changed the permisson with mode
+exit > docker container exec -it server_1  bash # switch to server_1
+cd /etc/ansible/facts.d/ > ll  # get_version.facts* is copied
+ansible -i inventory all -m setup
+ansible -i inventory all -m setup -a "filter=ansible_local"  
+mv /tmp/get_version.facts /tmp/get_version.fact
+ansible all -i inventory -m copy -a "src=/tmp/get_version.fact dest=/etc/ansible/facts.d mode='0755'"
+ansible all -i inventory -m file -a "path=/etc/ansible/facts.d/get_version.facts state=absent"  # removed the facts one
+ansible -i inventory all -m setup -a "filter=ansible_local"   # success and this is the way how you design your custom facts
