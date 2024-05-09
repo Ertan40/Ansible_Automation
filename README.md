@@ -4,4 +4,4 @@ Ansible is an open source, command-line IT automation software application writt
 
 ## What's Inside?
 
-In this repo, you'll find a Docker Compose file along with DockerFiles that sets up a playground for your Ansible which you can exercise. In addition to that my demos.
+In this repo, you'll find a Docker Compose file along with DockerFiles that sets up a playground for your Ansible which you can exercise. In addition to that included my demos.
