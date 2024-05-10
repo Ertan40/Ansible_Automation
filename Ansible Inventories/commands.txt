@@ -1,0 +1,21 @@
+**** inventories - demo **** 
+ansible-doc -t inventory -l  # list all dynamic inventory plugins
+ansible --version   # config file = None (by default)
+touch /tmp/ansible.cfg
+ls /tmp/
+export ANSIBLE_CONFIG=/tmp/ansible.cfg  # I have created an env variable
+echo $ANSIBLE_CONFIG  # output: /tmp/ansible.cfg
+ansible --version   # config file = /tmp/ansible.cfg
+unset ANSIBLE_CONFIG  # if you want to remove
+touch ./ansible.cfg  # created in current dir (preferred way)
+rm /tmp/ansible.cfg 
+export ANSIBLE_CONFIG=/ansible/ansible.cfg
+ansible --version   # config file = /ansible/ansible.cfg
+vi hosts    # i [all] esc :wq 
+vi ansible.cfg  # [defaults] under it inventory=hosts
+ansible all  # this is the way how you set-up your ansible angine and configure
+###
+[defaults]
+inventory = hosts
+###
+ansible-doc -t inventory -l >> ansible_plugin.txt
