@@ -1,3 +1,4 @@
+#!/usr/bin/ansible-playbook
 - name: Installing WebServer
   hosts: all
   remote_user: root

@@ -12,6 +12,14 @@ root@server_1:/# apache2 -v
 Server version: Apache/2.4.58 (Ubuntu)
 Server built:   2024-04-18T15:13:41
 
+which ansible-playbook  # output: /usr/bin/ansible-playbook (shebang line)
+ll playbook_intro/
+chmod 0755 -R play playbook_intro/  # give executable permission to all files in the directory
+playbook_intro/install_httpd.yml  # in order to apply directly there are 4 steps:
+""""1. your shebang should be there (binary location of your playbook) 2. your dynamic or static inventory path that must be inventory.cfg location
+3. you have to define your remote ssh user in the playbook  4. you have to ensure that your playbook.yml file should has the exec permission""""
+playbook_intro/install_httpd.yml --syntax-check
+playbook_intro/install_httpd.yml --check   # dry run
 
 **** additional info ****
 - name: Install Apache WebServer
