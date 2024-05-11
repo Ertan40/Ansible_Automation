@@ -1,0 +1,25 @@
+**** Basic of Ansible Playbook - demo **** 
+
+ll > mkdir playbook_intro # let's create a directory
+cd playbook_intro 
+vi intro_playbook.yml
+ansible-playbook -i /ansible/inventory intro_playbook.yml
+ansible-playbook -vvv -i /ansible/inventory intro_playbook.yml  # in case you got an error, you can add -vvv for detailed info for debug
+vi install_httpd.yml  # let's install Apache WebServer on both clients
+ansible-playbook -i /ansible/inventory install_httpd.yml
+cd .. > exit > docker container exec -it server_1 bash  ## switch to server_1 to check
+root@server_1:/# apache2 -v
+Server version: Apache/2.4.58 (Ubuntu)
+Server built:   2024-04-18T15:13:41
+
+
+**** additional info ****
+- name: Install Apache WebServer
+      vars:
+        pkg_mgr_backend: "{{ 'dnf' if ansible_facts['os_family'] == 'RedHat' else 'apt' }}"
+      yum:
+        name: httpd
+        state: latest
+      when: ansible_facts['os_family'] == 'RedHat'
+
+

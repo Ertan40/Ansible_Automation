@@ -1,0 +1,17 @@
+- name: Installing WebServer
+  hosts: all
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+
+  tasks:
+    - name: Install Apache WebServer
+      apt:
+        name: apache2
+        state: latest     # state: absent "in order to remove"
+      # when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Ensure Apache is Running
+      service: 
+        name: httpd
+        state: started

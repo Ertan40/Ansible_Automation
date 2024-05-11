@@ -7,3 +7,5 @@
   tasks:
     - name: Checking Connection via Ping
       ping:
+
+    
