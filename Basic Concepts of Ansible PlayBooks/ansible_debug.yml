@@ -1,0 +1,35 @@
+- name: This is Overview of Ansible Debug Module
+  hosts: server_1   # for both all
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+
+  tasks:
+    - name: Task for Debug Module Messaging
+      debug:
+        msg: "Hi, this is Custom message for Debug Module {{ ansible_os_family }}"
+
+    - name: Print two lines of messages
+      debug:
+        msg: 
+        - "Hi this is multiline message"
+        - "I am line number two ......"  
+
+    - name: Print Variable in messages
+      debug:
+        msg:
+        - "Host IP is - {{ inventory_hostname }}"
+        - Host IP is - {{ inventory_hostname }}
+        - System {{ inventory_hostname }} has gateway - {{ ansible_default_ip4.gateway }}
+      when: ansible_default_ip4 is defined
+
+    - name: debug module var parameter
+      debug:
+        var: inventory_hostname 
+    
+    - name: verbosity in debug module
+      debug:
+        msg: "Hi this is deep logging at debug level 2"
+        verbosity: 2  
+        
+        

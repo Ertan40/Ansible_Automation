@@ -1,0 +1,7 @@
+**** Basic Concepts of Ansible Playbooks - demo ****
+**** debug - demo ****
+docker container exec -it ansible bash
+cd playbook_intro 
+vi ansible_debug.yml
+ls -l /root/.ssh/id_rsa  # just checking the permissions
+ansible-playbook -i /ansible/inventory ansible_debug.yml -v
