@@ -1,0 +1,25 @@
+- name: This is Overview of Ansible Debug Module 
+  hosts: server_1   # for both all
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+
+    test: hello, this is dummy value
+    my_name: Ertan
+    my_age: 40
+    my_height: 1.88
+    is_male: true
+
+  tasks:
+    - name: Reading Ansible Playbook Variable
+      debug:
+        var: test
+
+    - name: Reading Ansible Playbook Variables
+      debug:
+        msg:
+        - My name is {{ my_name }} 
+        - I am {{ my_age }} years old.
+        - And I am {{ my_height }} tall, my gender is male - {{ is_male }} 
+
+  

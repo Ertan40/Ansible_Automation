@@ -5,3 +5,5 @@ cd playbook_intro
 vi ansible_debug.yml
 ls -l /root/.ssh/id_rsa  # just checking the permissions
 ansible-playbook -i /ansible/inventory ansible_debug.yml -vv
+vi ansible_var.yml
+ansible-playbook -i /ansible/inventory ansible_var.yml
