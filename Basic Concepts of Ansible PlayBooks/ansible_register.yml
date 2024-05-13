@@ -1,0 +1,19 @@
+- name: This is Overview of Ansible Register and Set_Fact  
+  hosts: server_1   
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+
+
+  tasks: 
+    - name: Retrieve Installed Shell Version
+      shell: "bash --version"
+      register: bash_ver
+
+    - set_fact:
+        bash_version: "{{ bash_ver.stdout_lines[0].split()[3] }}"
+
+    - debug:
+        var: bash_version
+  
+  
