@@ -1,0 +1,34 @@
+- name: This is Overview of Ansible Data Collection
+  hosts: server_1   
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+
+    abc: Hello this is abc
+    packages: ['wget', 'unzip', 'curl', 'vim']  # sequence based
+    cities:
+      - New York
+      - Istanbul
+      - Sofia
+      - London
+    web_server: {'Linux': 'httpd', 'Unix': 'apache2'}  # map based
+  
+  tasks:
+    - name: This is Data Collection Retrieval
+      debug:
+        var: abc
+
+    - name: Getting Sequence Data Collection F 1
+      debug:
+        var: packages
+
+    - name: Getting Sequence Data Collection F 2
+      debug:
+        var: cities
+
+    - name: Getting Sequence Data Collection F 3
+      debug:
+        var: web_server
+
+  
+

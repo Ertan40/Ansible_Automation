@@ -7,3 +7,9 @@ ls -l /root/.ssh/id_rsa  # just checking the permissions
 ansible-playbook -i /ansible/inventory ansible_debug.yml -vv
 vi ansible_var.yml
 ansible-playbook -i /ansible/inventory ansible_var.yml
+
+cd ..
+mkdir playbook_basic
+cd playbook_basic
+vi ansible_datacollection.yml
+ansible-playbook -i /ansible/inventory ansible_datacollection.yml
