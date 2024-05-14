@@ -1,0 +1,19 @@
+- name: This is to Display Arithmetic Operations on Variables 
+  hosts: localhost
+  gather_facts: false  
+
+  vars:
+    a: 10
+    b: 20
+
+  tasks:
+    - name: Operations on Variables
+      debug:
+        msg: 
+        - "value of a is : {{a}}"
+        - "value of b is : {{b}}"
+        - "Addition of a and b : {{a + b}}"
+        - "Subs of a and b : {{a - b}}"
+        - "Multiply of a and b : {{a + b}}"
+        - "Divide of a and b : {{a / b}}"
+  
