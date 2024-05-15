@@ -1,0 +1,38 @@
+- name: Loops in Ansible Playbook Part 1
+  hosts: all
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+    alpha: ['a', 'b', 'c', 'd']
+    numbers: [1, 2, 3, 4]  
+
+  tasks: # Add multiple user's in one go
+    - name: Add several users in one go
+      user:
+        name: "{{ item }}"
+        state: present
+        groups: "games"
+      with_items: 
+        - testuser1
+        - testuser2
+        - testuser3
+        - testuser4
+
+    - name: Add several users
+      user:
+        name: "{{ item.name }}"
+        state: present  # if we change to absent then will remove
+        groups: "{{ item.groups }}"
+      with_items: 
+        - { name: 'testuser5', groups: 'staff' }  # changed: [server_1] => (item={'name': 'testuser5', 'groups': 'staff'})
+        - { name: 'testuser6', groups: 'staff' }
+        - { name: 'testuser7', groups: 'shadow' }
+        - { name: 'testuser8', groups: 'shadow' }
+
+    - name: Loop Over Set of Collection Variable
+      debug:
+        msg: "{{ item.0 }} and {{ item.1 }}"  # "msg": "a and 1"
+      with_together:
+        - "{{ alpha }}"
+        - "{{ numbers }}"
+

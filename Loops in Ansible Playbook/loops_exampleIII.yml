@@ -1,0 +1,39 @@
+- name: Loops in Ansible Playbook Part 3 
+  hosts: all
+  remote_user: root
+
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+    packages: [ 'gettext', 'libssl-dev', 'perl-doc', 'perl', 'zlib1g-dev', 'unzip', 'wget' ]
+
+  tasks: 
+    - name: Update Package Cache
+      apt:
+        update_cache: yes
+        
+    - name: Install Multiple Packages Using Loop
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:   # or "{{ packages }}"
+        - gettext
+        - libssl-dev  # openssl-devel equivalent
+        - perl-doc    # perl-CPAN equivalent
+        - perl        # perl-devel equivalent
+        - zlib1g-dev  # zlib-devel equivalent
+        - unzip
+        - wget
+
+    - name: Uninstall Multiple Packages Using Index Loop
+      apt:
+        name: "{{ item.1 }}"
+        state: absent
+      with_indexed_items:
+        - "{{ packages }}"
+
+    - name: Reinstall Multiple Packages Using Index Loop
+      apt:
+        name: "{{ item.0 }}"
+        state: present
+      with_together:
+        - "{{ packages }}"

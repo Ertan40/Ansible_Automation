@@ -1,0 +1,32 @@
+- name: Loops in Ansible Playbook Part 2
+  hosts: all
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+    alpha: ['a', 'b', 'c', 'd']
+    numbers: [1, 2, 3, 4]  
+
+  tasks: 
+    - name: Random Looping Example
+      debug:
+        msg: "{{ item }}"
+      with_random_choice:
+        - "go through the door"
+        - "drink from the goblet"
+        - "press the red button"
+        - "do nothing" 
+    # Looping Over A List With An Index
+    - name: Looping over a List  
+      debug:
+        msg: "At array position {{ item.0 }} there is a value {{ item.1 }}"
+      with_indexed_items:
+        - "{{ alpha }}"
+    # Do Until Loop
+    - name: Ensure Apache is Running
+      service:
+        name: apache2
+        state: started
+      register: result
+      until: result.changed == True
+      retries: 6
+      delay: 4
