@@ -1,0 +1,11 @@
+**** Loops in Ansible Playbook - demo **** 
+
+docker container exec -it server_1 bash
+ll
+cat /etc/group  # list out the groups and let's pick from there
+docker container exec -it ansible bash
+mkdir playbook_loops
+cd playbook_loops
+vi loops_example.yml
+ansible-playbook -i /ansible/inventory loops_example.yml  # chmod -R 0755 playbook_loops/ > playbook_loops/loops_example.yml
+cat /etc/passwd  # checked the users in server_1 and all good
