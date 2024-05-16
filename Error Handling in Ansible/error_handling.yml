@@ -1,0 +1,24 @@
+- name: Error Handling Part I
+  hosts: all
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+
+  tasks:
+    - name: List all files/dirs in /etc location
+      command: ls "/etcc/"
+      register: etc_out   # store
+      ignore_errors: yes   # if error ignore
+    - debug: var=etc_out  # output
+
+    - name: List all files/dirs in /tmp location
+      command: ls "/tmp/"
+      register: tmp_out   
+    - debug: var=tmp_out  
+
+    - name: List all files/dirs in /etc location
+      command: ls "/etcc/"
+      register: etc1_out   
+      ignore_errors: yes   
+    - debug: var=etc1_out  
+      failed_when: etc1_out.rc==2
