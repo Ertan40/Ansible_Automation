@@ -1,0 +1,68 @@
+- name: Install and Configure Tomcat using Ansible
+  hosts: server_1
+  remote_user: root
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+
+  tasks:
+    - name: Update All Packages on Machine
+      apt:
+        update_cache: yes
+
+    - name: Install Java on server
+      apt:
+        name: openjdk-8-jdk
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install wget if not present
+      apt:
+        name: wget
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Create Tomcat user
+      ansible.builtin.user:
+        name: tomcat
+        shell: /bin/false
+
+    - name: Download Tomcat
+      ansible.builtin.get_url:
+        url: https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.tar.gz
+        dest: /tmp/apache-tomcat-9.0.41.tar.gz
+
+    - name: Create installation directory
+      file:
+        path: /opt/tomcat
+        state: directory
+
+    - name: Extract Tomcat
+      ansible.builtin.unarchive:
+        src: /tmp/apache-tomcat-9.0.41.tar.gz
+        dest: /opt/tomcat
+        remote_src: yes
+
+    - name: Change ownership of Tomcat directory
+      ansible.builtin.command: "chown -R tomcat: /opt/tomcat/apache-tomcat-9.0.41"
+
+    - name: Set permissions on Tomcat directory
+      ansible.builtin.command: "chmod -R 755 /opt/tomcat/apache-tomcat-9.0.41"
+
+    - name: Create systemd service file for Tomcat
+      template:
+        src: tomcat.service.j2
+        dest: /etc/systemd/system/tomcat.service
+
+    # - name: Reload systemd daemon
+    #   ansible.builtin.systemd:
+    #     daemon_reload: yes
+
+    # - name: Start Tomcat
+    #   ansible.builtin.systemd:
+    #     name: tomcat
+    #     state: started
+    #     enabled: yes
+
+
+

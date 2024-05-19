@@ -1,0 +1,32 @@
+- name: Installing WebServer 
+  hosts: server_1
+  remote_user: root
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/id_rsa
+    custom_var : 123abc
+
+  tasks:
+    - name: Ensure Apache is at the Latest Version
+      apt:
+        name: apache2
+        state: present 
+      notify:
+        - Ensure Apache is Running 
+
+    - name: Updating Index HTML file
+      template:
+        src: index.html.j2
+        dest: /usr/share/apache2/default-site/index.html
+      notify:
+        - Ensure Apache is Restart 
+      
+  handlers:
+    - name: Ensure Apache is Running
+      service: 
+        name: apache2
+        state: started
+
+    - name: Ensure Apache is Restart
+      service: 
+        name: apache2
+        state: restarted
